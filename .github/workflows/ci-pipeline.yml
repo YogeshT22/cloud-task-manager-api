@@ -1,0 +1,33 @@
+# .github/workflows/ci-pipeline.yml
+
+name: CI Pipeline - Build and Push Docker Image
+
+# This workflow runs on any push to the 'main' branch
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest # Use a standard Linux runner
+
+    steps:
+      # Step 1: Check out the repository code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Log in to Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Step 3: Build and push the Docker image
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: . # Use the current directory as the build context
+          push: true # Actually push the image after building
+          # Tag the image with 'latest' and a unique SHA hash
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/cloud-task-manager:latest,${{ secrets.DOCKERHUB_USERNAME }}/cloud-task-manager:${{ github.sha }}
