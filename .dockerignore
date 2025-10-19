@@ -1,0 +1,18 @@
+# Ignore the virtual environment
+venv
+
+# Ignore Python bytecode and cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore the local database data from docker-compose
+postgres_data
+
+# Ignore IDE/editor specific files
+.vscode/
+.idea/
+
+# Ignore the .env file to keep secrets out of the image
+.env

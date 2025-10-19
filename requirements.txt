@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+sqlalchemy          # The ORM
+psycopg2-binary     # The Python driver for PostgreSQL
+pydantic-settings   # To load our .env file
+passlib[bcrypt]     # For password hashing
+python-jose[cryptography] # For creating and verifying JWTs
+python-multipart    # For handling file uploads
+argon2-cffi # For password hashing with Argon2

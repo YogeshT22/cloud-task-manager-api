@@ -1,0 +1,29 @@
+# docker-compose.yml
+
+version: "3.8"
+
+services:
+  # This is the service name for our PostgreSQL database
+  db:
+    # We use the official PostgreSQL image from Docker Hub
+    image: postgres:14-alpine
+    # This ensures the container restarts automatically if it crashes
+    restart: always
+    # Environment variables needed by the PostgreSQL image to initialize the database
+    environment:
+      - POSTGRES_USER=myuser
+      - POSTGRES_PASSWORD=mypassword
+      - POSTGRES_DB=taskmanager
+    # This maps port 5432 inside the container to port 5432 on our host machine
+    # so our FastAPI app can connect to it.
+    ports:
+      - "5432:5432"
+    # This creates a 'volume' to persist the database data on our host machine.
+    # Without this, all data would be lost if the container is removed.
+    # this is inside docker? answer: yes, it maps to a volume on the host machine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+
+# This defines the volume we named above
+volumes:
+  postgres_data:
