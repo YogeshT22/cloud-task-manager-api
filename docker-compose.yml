@@ -1,29 +1,37 @@
-# docker-compose.yml
-
-version: "3.8"
-
 services:
-  # This is the service name for our PostgreSQL database
+  # The Database Service
   db:
-    # We use the official PostgreSQL image from Docker Hub
     image: postgres:14-alpine
-    # This ensures the container restarts automatically if it crashes
     restart: always
-    # Environment variables needed by the PostgreSQL image to initialize the database
     environment:
       - POSTGRES_USER=myuser
       - POSTGRES_PASSWORD=mypassword
       - POSTGRES_DB=taskmanager
-    # This maps port 5432 inside the container to port 5432 on our host machine
-    # so our FastAPI app can connect to it.
     ports:
-      - "5432:5432"
-    # This creates a 'volume' to persist the database data on our host machine.
-    # Without this, all data would be lost if the container is removed.
-    # this is inside docker? answer: yes, it maps to a volume on the host machine
+      - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data/
+    # --- NEW: Health Check ---
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U myuser -d taskmanager"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
-# This defines the volume we named above
+  # The API Service
+  api:
+    build: .
+    restart: always
+    # --- NEW: Condition-based Dependency ---
+    depends_on:
+      db:
+        condition: service_healthy # Wait for the healthcheck to pass
+    ports:
+      - '8000:8000'
+    env_file:
+      - .env
+    environment:
+      - DATABASE_HOSTNAME=db
+
 volumes:
   postgres_data:
