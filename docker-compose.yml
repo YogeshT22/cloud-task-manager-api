@@ -8,7 +8,7 @@ services:
       - POSTGRES_PASSWORD=mypassword
       - POSTGRES_DB=taskmanager
     ports:
-      - '5432:5432'
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     # --- NEW: Health Check ---
@@ -22,12 +22,12 @@ services:
   api:
     build: .
     restart: always
-    # --- NEW: Condition-based Dependency ---
+    # --- BUG__FIX__NEW: Condition-based Dependency ---
     depends_on:
       db:
         condition: service_healthy # Wait for the healthcheck to pass
     ports:
-      - '8000:8000'
+      - "8000:8000"
     env_file:
       - .env
     environment:

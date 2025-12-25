@@ -4,6 +4,7 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
+
     # Database settings
     database_hostname: str
     database_port: str
@@ -20,5 +21,5 @@ class Settings(BaseSettings):
         env_file = ".env"
 
 
-# Create a single, reusable instance of the settings
+# DEVNOTE: This creates a single, reusable instance of the settings
 settings = Settings()

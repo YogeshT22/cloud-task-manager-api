@@ -1,4 +1,4 @@
-# app/database.py
+# filepath: app/database.py
 
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
@@ -6,18 +6,19 @@ from sqlalchemy.orm import sessionmaker
 from .config import settings
 
 
-# This is the connection URL for SQLAlchemy
-# Format: 'postgresql://<user>:<password>@<hostname>:<port>/<dbname>'
+# This is the connection URL for SQLAlchemy afaik!!
+# "Format" should be: 'postgresql://<user>:<password>@<hostname>:<port>/<dbname>'
+
 DATABASE_URL = f"postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}"
 
 # The 'engine' is the core interface to the database.
 engine = create_engine(DATABASE_URL)
 
-# A session is a temporary connection to the database for performing transactions.
-# This creates a configurable Session class.
+# session is a temporary connection to the database for performing transactions!
+# a configurable session class.
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# All of our models (like the Task class) will inherit from this Base class.
+# All of models (like the Task class) will inherit from this Base class.
 Base = declarative_base()
 
 

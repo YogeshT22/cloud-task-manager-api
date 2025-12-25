@@ -1,10 +1,21 @@
+# ----------------------------------------
+# SCHEMAS FOR TASKS AND USERS
+# target: Cloud Task Manager API
+# personal project for learning backend development with FastAPI and PostgreSQL.
+# referring docs, making comments for better understanding later.
+# ----------------------------------------
+
+
 # app/schemas.py
 
 from pydantic import BaseModel
 from datetime import datetime
 
-# This is a base model. We use it to share common attributes
-# between other schemas to avoid repetition (DRY principle).
+# DOCS_MENTIONED: "This is a base model. We use it to share common attributes
+# between other schemas to avoid repetition (DRY principle)."
+
+# TASK SCHEMAS
+# pattern is Base schema -> Create schema -> Response schema
 
 
 class TaskBase(BaseModel):
@@ -15,12 +26,16 @@ class TaskBase(BaseModel):
 # This schema is used when a user sends data to create a task.
 # It inherits all fields from TaskBase.
 
+# Create schema
+
 
 class TaskCreate(TaskBase):
     pass
 
 # This schema is used when we return a task in an API response.
 # It includes the database-generated fields like 'id' and 'created_at'.
+
+# Response schema
 
 
 class TaskResponse(TaskBase):

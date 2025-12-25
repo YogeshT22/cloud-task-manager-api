@@ -1,3 +1,9 @@
+# --------------------------------------
+# GitHub Actions Workflow for CI Pipeline
+# Purpose: Build and push Docker image to Docker Hub on push to main branch
+# Target: Cloud-based CI/CD using GitHub Actions
+# --------------------------------------
+
 # .github/workflows/ci-pipeline.yml
 
 name: CI Pipeline - Build and Push Docker Image
@@ -9,7 +15,7 @@ on:
 
 jobs:
   build-and-push:
-    runs-on: ubuntu-latest # Use a standard Linux runner
+    runs-on: ubuntu-latest
 
     steps:
       # Step 1: Check out the repository code
@@ -28,6 +34,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: . # Use the current directory as the build context
-          push: true # Actually push the image after building
+          push: true # This should push the image after building
+
           # Tag the image with 'latest' and a unique SHA hash
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/cloud-task-manager:latest,${{ secrets.DOCKERHUB_USERNAME }}/cloud-task-manager:${{ github.sha }}
