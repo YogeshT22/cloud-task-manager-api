@@ -44,7 +44,7 @@ backend service for deployment.
 
 ## Architecture Diagram
 
-![arch diagram](src/arch-diagram.png)
+![arch diagram](assets/arch-diagram.png)
 
 - FLOW: Developer -> Git Push -> GitHub Actions -> Docker Build -> Push to Docker Hub.
 
