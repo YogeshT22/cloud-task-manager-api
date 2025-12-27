@@ -1,12 +1,13 @@
 # Project: Cloud Task Manager API with CI/CD
+
 ### FINAL PROJECT VERSION: V1 - OCT 19, 2025
 
 This repository contains the **source code** and **CI/CD pipeline** for a secure, **multi-tenant REST API built with Python (FastAPI) and PostgreSQL**.
 
 The project demonstrates a **full backend development lifecycle**, from local containerized development to a fully automated CI pipeline using **GitHub Actions** that builds and publishes a production-ready Docker image to Docker Hub.
 
-The application features **JWT-based authentication, password hashing with Argon2, resource ownership, and follows modern API design principles**. 
-The entire system showcases an end-to-end workflow for developing, containerizing, and preparing a 
+The application features **JWT-based authentication, password hashing with Argon2, resource ownership, and follows modern API design principles**.
+The entire system showcases an end-to-end workflow for developing, containerizing, and preparing a
 backend service for deployment.
 
 ---
@@ -19,7 +20,7 @@ backend service for deployment.
 
 ### **Authentication & Security**:
 
-- Integrated a **secure authentication system using JWT (JSON Web Tokens)** via the standard **OAuth2 Password Flow**. 
+- Integrated a **secure authentication system using JWT (JSON Web Tokens)** via the standard **OAuth2 Password Flow**.
 - Implemented strong password hashing using Argon2 via the passlib library, a modern and recommended alternative to Bcrypt.
 
 - Enforced resource ownership, ensuring users can only access and modify their own data.
@@ -27,7 +28,7 @@ backend service for deployment.
 ### **Database Management**:
 
 - Utilized **PostgreSQL** as the relational database.
- 
+
 - Managed database interactions and schema definitions in a "Pythonic" way using SQLAlchemy ORM.
 
 ### **Containerization & CI/CD:**
@@ -51,6 +52,7 @@ backend service for deployment.
 ---
 
 ## Project Structure
+
 ```code
 cloud-task-manager-api/
 │
@@ -83,22 +85,24 @@ cloud-task-manager-api/
 **Prerequisites**:
 
 - Docker Desktop installed and running.
-A code editor like **VS Code**.
+  A code editor like **VS Code**.
 
 ### Step 1: Clone the Repository
+
 ```bash
 git clone https://github.com/YogeshT22/cloud-task-manager-api.git
 cd cloud-task-manager-api
 ```
 
 ### Step 2: Configure Environment Variables
+
 - Create a `.env` file in the project root by copying the example:
+
 ```Bash
 cp .env.example .env
 ```
 
 - The default values in the .env file are pre-configured to work with the docker-compose.yml setup. You can generate a new SECRET_KEY for better security if you wish.
-
 
 ### Step 3: Launch the Development Environment
 
@@ -109,14 +113,14 @@ docker-compose up --build -d
 ```
 
 - The API will be available at `http://localhost:8000`
-- The interactive API documentation (Swagger UI) is available at `http://localhost:8000/docs`. 
+- The interactive API documentation (Swagger UI) is available at `http://localhost:8000/docs`.
 
 _The API is now running. You can use the interactive docs to test the endpoints._
 
 - **Create a User**: Go to `POST /users/` and create a new user with an email and password.
 - **Log In**: Go to `POST /login`, enter the same credentials (using the email as the username), and execute to receive a JWT access_token.
 
-    <u>Note: _"Tokens expire automatically, and refresh tokens will be added in a future version of this project for long-lived sessions.”_</u>
+  <u>Note: _"Tokens expire automatically, and refresh tokens will be added in a future version of this project for long-lived sessions.”_</u>
 
 - **Authorize**: Click the `"Authorize"` button at the top right of the docs, paste your token (e.g., Bearer eyJhbGci...), and authorize.
 - **Create and Manage Tasks**: You can now use the protected `/tasks/` endpoints to _**create, view, update, and delete tasks associated with your user.**_
@@ -129,22 +133,24 @@ _The API is now running. You can use the interactive docs to test the endpoints.
 
 - **Trigger**: The pipeline runs automatically on every git push to the main branch.
 
-- **Actions**: 
-	- Checkout Code: The runner checks out the latest version of the source code.
+- **Actions**:
 
-	- Login to Docker Hub: It authenticates with Docker Hub using secrets stored in the repository settings (DOCKERHUB_USERNAME, DOCKERHUB_TOKEN).
-	
-	- Build & Push Image: It builds a new Docker image using the Dockerfile and pushes it to the public repository `<your-dockerhub-username>/<repo-name>`, tagging it with latest and the unique Git commit SHA.
-	
-	- The public Docker image can be pulled using:
-	```bash
-	docker pull <your-dockerhub-username>/<image-name>:latest
-	```
-	_example:_ 	`yogesht22/cloud-task-manager-api:latest_`
+  - Checkout Code: The runner checks out the latest version of the source code.
+
+  - Login to Docker Hub: It authenticates with Docker Hub using secrets stored in the repository settings (DOCKERHUB_USERNAME, DOCKERHUB_TOKEN).
+
+  - Build & Push Image: It builds a new Docker image using the Dockerfile and pushes it to the public repository `<your-dockerhub-username>/<repo-name>`, tagging it with latest and the unique Git commit SHA.
+
+  - The public Docker image can be pulled using:
+
+  ```bash
+  docker pull <your-dockerhub-username>/<image-name>:latest
+  ```
+
+  _example:_ `yogesht22/cloud-task-manager-api:latest_`
 
 ---
 
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
-
