@@ -2,13 +2,14 @@
 
 ### FINAL PROJECT VERSION: V1 - OCT 19, 2025
 
-This repository contains the **source code** and **CI/CD pipeline** for a secure, **multi-tenant REST API built with Python (FastAPI) and PostgreSQL**.
+- This repository contains the **source code** and **CI/CD pipeline** for a secure, **multi-tenant REST API built with Python (FastAPI) and PostgreSQL**.
 
-The project demonstrates a **full backend development lifecycle**, from local containerized development to a fully automated CI pipeline using **GitHub Actions** that builds and publishes a production-ready Docker image to Docker Hub.
+- The project demonstrates a **full backend development lifecycle**, from local containerized development to a fully automated CI pipeline using **GitHub Actions** that builds and publishes a production-ready Docker image to Docker Hub.
 
-The application features **JWT-based authentication, password hashing with Argon2, resource ownership, and follows modern API design principles**.
-The entire system showcases an end-to-end workflow for developing, containerizing, and preparing a
-backend service for deployment.
+- The application features **JWT-based authentication, password hashing with Argon2, resource ownership, and follows modern API design principles**.
+The entire system showcases an end-to-end workflow for developing, containerizing, and preparing a backend service for deployment.
+
+## ![Logo](assets/logo.png)
 
 ---
 
