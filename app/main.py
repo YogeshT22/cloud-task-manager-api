@@ -1,6 +1,6 @@
 # ---------------------------------
 # purpose: main application file for FastAPI app
-# target: Cloud Task Manager API
+# target: Distributed Task Processing API
 # personal project for learning backend development with FastAPI and PostgreSQL.
 # --------------------------------
 
@@ -12,6 +12,7 @@ from fastapi import FastAPI
 from . import models
 from .database import engine  # Imports the engine from database.py
 from .routers import task, user, auth
+from . import celery_app, tasks  # Import Celery for task autodiscovery
 
 
 # DOCS_MENTIONED: "SQLAlchemy will look at all the classes that inherit from Base (in models.py)
@@ -25,8 +26,8 @@ models.Base.metadata.create_all(bind=engine)
 # DOUBT__: instance here is like server? answer: Yes, the 'app' instance created from the FastAPI class acts as the
 # -- main application or server that will handle incoming HTTP requests and route them to the appropriate functions.
 app = FastAPI(
-    title="Cloud Task Manager API",
-    description="A simple API to manage tasks and users.",
+    title="Distributed Task Processing Platform",
+    description="A containerized platform for task management and distributed background processing.",
     version="0.1.0"
 )
 
@@ -55,7 +56,7 @@ def read_root():
 # 4. Return the content
 # FastAPI will automatically convert this Python dictionary into a JSON response.
 # key value pair in dictionary used in return to create JSON response, always we use return to send response back to client, in backend development.
-    return {"message": "Welcome to the Cloud Task Manager API!"}
+    return {"message": "Welcome to the Distributed Task Processing Platform!"}
 
 # DEVNOTE: You can add another simple endpoint for practice later
 

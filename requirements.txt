@@ -7,3 +7,5 @@ passlib[bcrypt]     # For password hashing
 python-jose[cryptography] # For creating and verifying JWTs
 python-multipart    # For handling file uploads
 argon2-cffi # For password hashing with Argon2
+celery              # Distributed task queue for background jobs
+redis               # In-memory data store for cache and queue broker

@@ -18,6 +18,19 @@ services:
       timeout: 5s
       retries: 5
 
+  # RabbitMQ Service for Celery broker
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   # The API Service
   api:
     build: .
@@ -26,12 +39,33 @@ services:
     depends_on:
       db:
         condition: service_healthy # Wait for the healthcheck to pass
+      rabbitmq:
+        condition: service_healthy # Wait for RabbitMQ to be healthy
     ports:
       - "8000:8000"
     env_file:
       - .env
     environment:
       - DATABASE_HOSTNAME=db
+      - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq:5672//
+      - CELERY_RESULT_BACKEND=rpc://
+
+  # Celery Worker Service for background tasks
+  worker:
+    build: .
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      - DATABASE_HOSTNAME=db
+      - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq:5672//
+      - CELERY_RESULT_BACKEND=rpc://
+    command: celery -A app.celery_app worker --loglevel=info --concurrency=2
 
 volumes:
   postgres_data:

@@ -1,40 +1,64 @@
-# --------------------------------------
-# GitHub Actions Workflow for CI Pipeline
-# Purpose: Build and push Docker image to Docker Hub on push to main branch
-# Target: Cloud-based CI/CD using GitHub Actions
-# --------------------------------------
+name: Code Quality Checks
 
-# .github/workflows/ci-pipeline.yml
-
-name: CI Pipeline - Build and Push Docker Image
-
-# This workflow runs on any push to the 'main' branch
+# Trigger on every push and pull request
 on:
   push:
-    branches: ["main"]
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
 
 jobs:
-  build-and-push:
+  lint-and-validate:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        python-version: ["3.10"]
+
     steps:
-      # Step 1: Check out the repository code
-      - name: Checkout repository
+      # Step 1: Checkout code
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Log in to Docker Hub
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
+      # Step 2: Set up Python
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          python-version: ${{ matrix.python-version }}
+          cache: pip
 
-      # Step 3: Build and push the Docker image
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: . # Use the current directory as the build context
-          push: true # This should push the image after building
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install flake8 black pylint isort
 
-          # Tag the image with 'latest' and a unique SHA hash
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/cloud-task-manager:latest,${{ secrets.DOCKERHUB_USERNAME }}/cloud-task-manager:${{ github.sha }}
+      # Step 4: Check code formatting with Black
+      - name: Check code formatting with Black
+        run: black --check app/ --line-length 100
+        continue-on-error: true
+
+      # Step 5: Lint with Flake8
+      - name: Lint with Flake8
+        run: |
+          flake8 app/ --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 app/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+        continue-on-error: true
+
+      # Step 6: Check imports with isort
+      - name: Check import sorting with isort
+        run: |
+          isort app/ --check-only --diff
+        continue-on-error: true
+
+      # Step 7: Summary
+      - name: Summary
+        run: |
+          echo "✅ Code quality checks completed"
+          echo "Tools: Black (formatter), Flake8 (linter), isort (imports)"
+          echo "Status: Warnings allowed (this is a local project)"
