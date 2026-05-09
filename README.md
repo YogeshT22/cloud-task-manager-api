@@ -1,7 +1,5 @@
 # Distributed Background Jobs with Celery + RabbitMQ
 
-# badges
-
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Code Quality Checks](https://github.com/YogeshT22/cloud-task-manager-api/actions/workflows/ci-pipeline.yml/badge.svg)](https://github.com/YogeshT22/cloud-task-manager-api/actions/workflows/ci-pipeline.yml) ![Works on my machine](https://img.shields.io/badge/works-on_my_machine-yellowgreen)
 
