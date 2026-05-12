@@ -158,24 +158,39 @@ The system now includes three core components:
 ###
 
 ```mermaid
-flowchart LR
-    Client["Client / k6"]
-    API["API Service<br/>(FastAPI + Uvicorn)"]
-    DB["PostgreSQL"]
-    Broker["RabbitMQ<br/>(Broker + RPC Backend)"]
-    Worker["Celery Worker(s)"]
-    MQUI["RabbitMQ<br/>Management UI"]
+flowchart TD
+
+    subgraph ClientLayer
+        Client["Client / k6"]
+    end
+
+    subgraph ApplicationLayer
+        API["FastAPI + Uvicorn"]
+        Worker["Celery Workers"]
+    end
+
+    subgraph MessagingLayer
+        Broker["RabbitMQ"]
+        MUI["RabbitMQ Management UI"]
+    end
+
+    subgraph DataLayer
+        DB["PostgreSQL"]
+    end
 
     Client -->|HTTP| API
-    API -->|Read / Write| DB
-    API -->|Enqueue Task| Broker
-    Broker -->|Deliver Message| Worker
-    Worker -->|Read / Write| DB
-    Client -->|Load Test| API
-    Broker --> MQUI
 
-    classDef infra fill:#f8f9fa,stroke:#333,stroke-width:1px
-    class API,DB,Broker,Worker,MQUI infra
+    API -->|Read / Write| DB
+
+    API -->|Async Task Queue| Broker
+
+    Broker -->|Task Messages| Worker
+
+    Worker -->|Read / Write| DB
+
+    Client -.->|Load Testing| API
+
+    Broker --> MUI
 ```
 
 ### Running Locally

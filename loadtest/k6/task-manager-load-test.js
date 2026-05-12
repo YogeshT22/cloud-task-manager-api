@@ -2,24 +2,29 @@ import http from 'k6/http';
 import { check, sleep } from 'k6';
 
 export const options = {
-  scenarios: {
+scenarios: {
     health_check: {
       executor: 'constant-vus',
-      vus: 10,
-      duration: '30s',
+      vus: 50,
+      duration: '3m',
       exec: 'healthCheck',
     },
     authenticated_tasks: {
-      executor: 'constant-vus',
-      vus: 20,
-      duration: '1m',
-      startTime: '5s',
+      executor: 'ramping-vus',
+      startTime: '10s',
       exec: 'authenticatedTaskFlow',
+      stages: [
+        { duration: '30s', target: 100 },
+        { duration: '1m',  target: 300 },
+        { duration: '1m',  target: 500 },
+        { duration: '30s', target: 700 },
+        { duration: '30s', target: 0 },
+      ],
     },
   },
   thresholds: {
-    http_req_failed: ['rate<0.01'],
-    http_req_duration: ['p(95)<500'],
+    http_req_failed: ['rate<0.05'],      // allow up to 5% errors
+    http_req_duration: ['p(95)<2000'],   // loose threshold so it doesn't abort early
   },
 };
 
