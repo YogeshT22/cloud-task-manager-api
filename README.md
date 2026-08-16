@@ -137,7 +137,33 @@ docker-compose down --remove-orphans
 
 ---
 
-### Architecture
+### Frontend Dashboard (Next.js)
+
+A Next.js + TypeScript dashboard is included in the `frontend/` folder. It connects to the FastAPI backend and lets you interact with the full pipeline from the browser.
+
+**Prerequisites:** Node.js 18+
+
+```bash
+# Step 1 — start the backend stack first
+make bootstrap
+# or: docker-compose up -d --build
+
+# Step 2 — start the frontend
+cd frontend
+npm install
+npm run dev
+
+# Open: http://localhost:3000
+```
+
+**What it covers:**
+- Register + Login (JWT auth flow)
+- Create, view, update, and delete tasks
+- Trigger a Celery reminder — the worker's task UUID is returned in the API's 202 response and shown as a browser toast, confirming background execution
+
+> The backend must be running on `http://localhost:8000` before starting the frontend. CORS is already configured in `app/main.py`.
+
+---
 
 The system now includes three core components:
 
@@ -162,6 +188,7 @@ flowchart TD
 
     subgraph ClientLayer
         Client["Client / k6"]
+        Browser["Browser (Next.js :3000)"]
     end
 
     subgraph ApplicationLayer
@@ -178,6 +205,7 @@ flowchart TD
         DB["PostgreSQL"]
     end
 
+    Browser -->|HTTP + JWT| API
     Client -->|HTTP| API
 
     API -->|Read / Write| DB
@@ -427,6 +455,7 @@ The repository includes code-quality workflow checks for GitHub pushes/PRs.
 - **Horizontal Scalability**: Multiple workers can process tasks in parallel
 - **Modern Backend Patterns**: Async APIs, event-driven design, eventual consistency
 - **Idempotent Task Design**: Safe retries without side effects
+- **Full-Stack Integration**: Next.js TypeScript frontend consuming a FastAPI backend with JWT auth
 
 ---
 

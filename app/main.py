@@ -7,7 +7,10 @@
 # app/main.py
 
 # 1. Import the FastAPI class from the fastapi library
+# pyrefly: ignore [missing-import]
 from fastapi import FastAPI
+# pyrefly: ignore [missing-import]
+from fastapi.middleware.cors import CORSMiddleware
 # here i should Import models to ensure they are registered before creating tables(mentioned in official docs! lol)
 from . import models
 from .database import engine  # Imports the engine from database.py
@@ -29,6 +32,18 @@ app = FastAPI(
     title="Distributed Task Processing Platform",
     description="A containerized platform for task management and distributed background processing.",
     version="0.1.0"
+)
+
+# CORS: Allow the Next.js frontend (localhost:3000) to call this API from a browser.
+# Browsers enforce the Same-Origin Policy — without this header, every fetch() call
+# from the frontend is blocked, even though curl/Postman work fine.
+# allow_credentials=True is required because we send Authorization: Bearer headers.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.include_router(auth.router)  # we add auth router
