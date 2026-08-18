@@ -31,6 +31,7 @@ class TaskBase(BaseModel):
 
 class TaskCreate(TaskBase):
     pass
+# but instead of pass we could also add additional fields specific to task creation if needed in the future.
 
 # This schema is used when we return a task in an API response.
 # It includes the database-generated fields like 'id' and 'created_at'.

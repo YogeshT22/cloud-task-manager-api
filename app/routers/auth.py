@@ -2,10 +2,13 @@
 from fastapi import APIRouter, Depends, status, HTTPException, Response
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-
 from .. import database, schemas, models, utils, oauth2
 
+# Router for authentication endpoints
 router = APIRouter(tags=['Authentication'])
+
+# Login endpoint for user authentication
+# This endpoint accepts user credentials, verifies them against the database, and returns a JWT access token if the credentials are valid.
 
 
 @router.post('/login')

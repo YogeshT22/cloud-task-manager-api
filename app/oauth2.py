@@ -17,7 +17,7 @@ from .config import settings
 
 
 # OAuth2PasswordBearer is a class we can use to handle the OAuth2 "password flow"
-# DOCS_MENTIONED: can create bugs if tokenUrl is not correct!
+# can create bugs if tokenUrl is not correct!
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='login')
 
 # Load settings from config.py by creating variables and calling settings attributes.
@@ -28,7 +28,6 @@ ACCESS_TOKEN_EXPIRE_MINUTES = settings.access_token_expire_minutes
 # function to create access token.
 # pattern is create function -> copy data -> set expiration -> encode JWT -> return token
 # DEVNOTE: data parameter is a dictionary containing the payload for the token.
-# stupid code formatter making it difficult to read the code!!
 
 
 def create_access_token(data: dict):
@@ -58,11 +57,13 @@ def verify_access_token(token: str, credentials_exception):
 
 # Dependency function to get the current user based on the token.
 
+# why we always handle edge cass like exceptions at first then we do the main logic? answer: Handling edge cases and exceptions at the beginning of a function is a common programming practice known as "fail-fast" or "early exit." This approach has several benefits:
+
 
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(database.get_db)):
+
     credentials_exception = HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-                                          detail=f"Could not validate credentials",
-                                          headers={"WWW-Authenticate": "Bearer"})
+                                          detail=f"Could not validate credentials", headers={"WWW-Authenticate": "Bearer"})
 
     token_data = verify_access_token(token, credentials_exception)
 

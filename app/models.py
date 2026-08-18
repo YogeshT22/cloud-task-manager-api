@@ -1,6 +1,6 @@
 # ---------------------------------
 # purpose: Define database models for the Cloud Task Manager API
-# target: Cloud Task Manager API
+# target: Distributive Task Processing API
 # personal project for learning backend development with FastAPI and PostgreSQL.
 # referring docs, making comments for better understanding later.
 # --------------------------------
@@ -30,7 +30,7 @@ class Task(Base):
     owner_id = Column(Integer, ForeignKey(
         "users.id", ondelete="CASCADE"), nullable=False)
 
-    # DOCS_MENTIONED: This creates a property on the Task model to easily access the related User object.
+    # This creates a property on the Task model to easily access the related User object.
     owner = relationship("User")
     # ---------------------------------
 

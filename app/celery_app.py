@@ -2,12 +2,14 @@
 """
 Celery configuration and initialization with RabbitMQ as the broker.
 """
+# pattern: import -> logging -> rabbitmq configuration -> celery app initialization -> celery configuration -> autodiscover tasks -> debug task
+
 
 from celery import Celery
 import os
 import logging
 
-
+# Set up logging
 logger = logging.getLogger(__name__)
 
 
@@ -61,8 +63,14 @@ celery_app.conf.update(
 # Auto-discover tasks from all installed apps
 celery_app.autodiscover_tasks(["app"])
 
+# what this does? answer: The `autodiscover_tasks` method tells Celery to automatically find and register tasks defined in the specified modules or packages. In this case, it looks for tasks in the "app" package, allowing you to organize your tasks across different modules without needing to manually register each one. This makes it easier to manage and scale your Celery tasks as your application grows.
+
+# Debug task to test Celery functionality
+
 
 @celery_app.task(bind=True)
 def debug_task(self):
     """Debug task to test Celery."""
     print(f'Request: {self.request!r}')
+
+

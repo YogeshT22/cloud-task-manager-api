@@ -22,11 +22,9 @@ from . import celery_app, tasks  # Import Celery for task autodiscovery
 # and generate the corresponding SQL "CREATE TABLE" statements."
 models.Base.metadata.create_all(bind=engine)
 
-
 # 2. Create an instance of the FastAPI class
 # DOCS_MENTIONED:This 'app' instance will be the main point of interaction for creating our API.
 
-# DOUBT__: instance here is like server? answer: Yes, the 'app' instance created from the FastAPI class acts as the
 # -- main application or server that will handle incoming HTTP requests and route them to the appropriate functions.
 app = FastAPI(
     title="Distributed Task Processing Platform",
@@ -38,6 +36,9 @@ app = FastAPI(
 # Browsers enforce the Same-Origin Policy — without this header, every fetch() call
 # from the frontend is blocked, even though curl/Postman work fine.
 # allow_credentials=True is required because we send Authorization: Bearer headers.
+
+# what is middleware: Middleware is a function that runs before or after each request. It can modify the request or response, or perform other actions like logging or authentication. In this case, we are using CORS middleware to handle cross-origin requests.
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],
@@ -45,7 +46,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+# Note__: In production we should restrict the origins to only the domains that need access to the API.
 
+# in below what we doing? answer: we are including the routers for auth, user, and task into our main FastAPI application instance. This allows us to organize our endpoints into separate modules and keep our codebase clean and maintainable.
 app.include_router(auth.router)  # we add auth router
 app.include_router(user.router)  # we add user router
 app.include_router(task.router)  # we add task router after auth and user.
@@ -54,10 +57,8 @@ app.include_router(task.router)  # we add task router after auth and user.
 # All endpoints defined in 'task.router' will now be part of our application.
 app.include_router(task.router)
 
-
 # 3. Define a "path operation decorator"
-# @app.get("/") tells FastAPI that the function below is in charge of
-# handling requests that go to the path "/" using a GET method.
+# @app.get("/") tells FastAPI that the function below is in charge of handling requests that go to the path "/" using a GET method.
 
 # DOUBT__: / is the root path of the API.
 

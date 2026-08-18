@@ -1,5 +1,7 @@
 # app/routers/task.py
 
+from email.message import Message
+
 from fastapi import Depends, HTTPException, status, APIRouter, Response
 from sqlalchemy.orm import Session
 from typing import List
@@ -19,6 +21,7 @@ router = APIRouter(
 )
 
 # CREATE A TASK
+# path relative to the router prefix, so the full path is /tasks/
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.TaskResponse, operation_id="create_task")
@@ -34,8 +37,8 @@ def create_task(task: schemas.TaskCreate, db: Session = Depends(get_db),
 
 
 @router.get("/", response_model=List[schemas.TaskResponse], operation_id="get_all_tasks")
-def get_tasks(db: Session = Depends(get_db),
-              current_user: models.User = Depends(oauth2.get_current_user)):
+def get_tasks(db: Session = Depends(get_db), current_user: models.User = Depends(oauth2.get_current_user)):
+
     tasks = db.query(models.Task).filter(
         models.Task.owner_id == current_user.id).all()
     return tasks
@@ -103,13 +106,12 @@ def update_task(id: int, updated_task: schemas.TaskCreate, db: Session = Depends
 
 
 @router.post("/{id}/remind", status_code=status.HTTP_202_ACCEPTED, operation_id="send_task_reminder")
-def send_reminder(id: int, db: Session = Depends(get_db),
-                  current_user: models.User = Depends(oauth2.get_current_user)):
+def send_reminder(id: int, db: Session = Depends(get_db), current_user: models.User = Depends(oauth2.get_current_user)):
     """
     Trigger a background task to send a reminder for the specified task.
-    
+
     Returns 202 Accepted immediately; the reminder is processed asynchronously.
-    
+
     Example response:
     {
         "task_id": "abc123def456...",
@@ -117,6 +119,8 @@ def send_reminder(id: int, db: Session = Depends(get_db),
         "detail": "Reminder queued for background processing"
     }
     """
+    # Fetch the task from the database
+    # so we query tasks and filter task by id and get first result
     task = db.query(models.Task).filter(models.Task.id == id).first()
 
     if not task:
@@ -129,9 +133,10 @@ def send_reminder(id: int, db: Session = Depends(get_db),
 
     try:
         # Dispatch background task to Celery worker
-        celery_task = send_task_reminder.delay(task_id=id, user_id=current_user.id)
+        celery_task = send_task_reminder.delay( # this send_task_reminder is the function defined in tasks.py, and .delay() is a Celery method that queues the task for asynchronous execution by a worker.
+            task_id=id, user_id=current_user.id)
         logger.info(f"Task reminder queued: {celery_task.id} for task {id}")
-        
+
         return {
             "task_id": celery_task.id,
             "status": "sent_to_queue",

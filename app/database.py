@@ -6,7 +6,7 @@ from sqlalchemy.orm import sessionmaker
 from .config import settings
 
 
-# This is the connection URL for SQLAlchemy afaik!!
+# This is the connection URL for SQLAlchemy!!
 # "Format" should be: 'postgresql://<user>:<password>@<hostname>:<port>/<dbname>'
 
 DATABASE_URL = f"postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}"
