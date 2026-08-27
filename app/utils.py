@@ -1,6 +1,6 @@
 # --------------------------------
 # purpose: utility functions for password hashing and verification using argon2.
-# target: Cloud Task Manager API
+# target: Task Processing API
 # personal project for learning backend development with FastAPI and PostgreSQL.
 # --------------------------------
 
@@ -18,6 +18,7 @@ pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
 
 def hash(password: str):
     return pwd_context.hash(password)
+
 
 # to verify a plain password against a hashed password
 # pattern is verify function -> use pwd_context to verify -> return boolean

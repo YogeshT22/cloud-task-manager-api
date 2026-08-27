@@ -1,6 +1,6 @@
 # ----------------------------------------
 # SCHEMAS FOR TASKS AND USERS
-# target: Cloud Task Manager API
+# target: Task Processing API
 # personal project for learning backend development with FastAPI and PostgreSQL.
 # referring docs, making comments for better understanding later.
 # ----------------------------------------
@@ -23,6 +23,7 @@ class TaskBase(BaseModel):
     content: str
     completed: bool = False  # Provide a default value
 
+
 # This schema is used when a user sends data to create a task.
 # It inherits all fields from TaskBase.
 
@@ -31,6 +32,8 @@ class TaskBase(BaseModel):
 
 class TaskCreate(TaskBase):
     pass
+
+
 # but instead of pass we could also add additional fields specific to task creation if needed in the future.
 
 # This schema is used when we return a task in an API response.
@@ -47,6 +50,7 @@ class TaskResponse(TaskBase):
     # It enables Pydantic to read data even if it's not a dict, but an ORM object.
     class Config:
         from_attributes = True  # Formerly orm_mode = True
+
 
 # USER SCHEMAS
 

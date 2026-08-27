@@ -2,7 +2,7 @@ import http from 'k6/http';
 import { check, sleep } from 'k6';
 
 export const options = {
-scenarios: {
+  scenarios: {
     health_check: {
       executor: 'constant-vus',
       vus: 50,
@@ -15,8 +15,8 @@ scenarios: {
       exec: 'authenticatedTaskFlow',
       stages: [
         { duration: '30s', target: 100 },
-        { duration: '1m',  target: 300 },
-        { duration: '1m',  target: 500 },
+        { duration: '1m', target: 300 },
+        { duration: '1m', target: 500 },
         { duration: '30s', target: 700 },
         { duration: '30s', target: 0 },
       ],

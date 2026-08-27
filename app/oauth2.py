@@ -18,7 +18,7 @@ from .config import settings
 
 # OAuth2PasswordBearer is a class we can use to handle the OAuth2 "password flow"
 # can create bugs if tokenUrl is not correct!
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl='login')
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 # Load settings from config.py by creating variables and calling settings attributes.
 SECRET_KEY = settings.secret_key
@@ -32,11 +32,11 @@ ACCESS_TOKEN_EXPIRE_MINUTES = settings.access_token_expire_minutes
 
 def create_access_token(data: dict):
     to_encode = data.copy()
-    expire = datetime.now(timezone.utc) + \
-        timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
+
 
 # function to verify access token.
 # pattern is verify function -> decode JWT -> extract user info -> handle exceptions -> return token data
@@ -55,19 +55,24 @@ def verify_access_token(token: str, credentials_exception):
         raise credentials_exception
     return token_data
 
+
 # Dependency function to get the current user based on the token.
 
 # why we always handle edge cass like exceptions at first then we do the main logic? answer: Handling edge cases and exceptions at the beginning of a function is a common programming practice known as "fail-fast" or "early exit." This approach has several benefits:
 
 
-def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(database.get_db)):
+def get_current_user(
+    token: str = Depends(oauth2_scheme), db: Session = Depends(database.get_db)
+):
 
-    credentials_exception = HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-                                          detail=f"Could not validate credentials", headers={"WWW-Authenticate": "Bearer"})
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail=f"Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
 
     token_data = verify_access_token(token, credentials_exception)
 
-    user = db.query(models.User).filter(
-        models.User.id == token_data["id"]).first()
+    user = db.query(models.User).filter(models.User.id == token_data["id"]).first()
 
     return user

@@ -9,8 +9,10 @@
 # 1. Import the FastAPI class from the fastapi library
 # pyrefly: ignore [missing-import]
 from fastapi import FastAPI
+
 # pyrefly: ignore [missing-import]
 from fastapi.middleware.cors import CORSMiddleware
+
 # here i should Import models to ensure they are registered before creating tables(mentioned in official docs! lol)
 from . import models
 from .database import engine  # Imports the engine from database.py
@@ -29,7 +31,7 @@ models.Base.metadata.create_all(bind=engine)
 app = FastAPI(
     title="Distributed Task Processing Platform",
     description="A containerized platform for task management and distributed background processing.",
-    version="0.1.0"
+    version="0.1.0",
 )
 
 # CORS: Allow the Next.js frontend (localhost:3000) to call this API from a browser.
@@ -69,10 +71,11 @@ def read_root():
     This is the root endpoint of the API.
     It returns a welcome message.
     """
-# 4. Return the content
-# FastAPI will automatically convert this Python dictionary into a JSON response.
-# key value pair in dictionary used in return to create JSON response, always we use return to send response back to client, in backend development.
+    # 4. Return the content
+    # FastAPI will automatically convert this Python dictionary into a JSON response.
+    # key value pair in dictionary used in return to create JSON response, always we use return to send response back to client, in backend development.
     return {"message": "Welcome to the Distributed Task Processing Platform!"}
+
 
 # DEVNOTE: You can add another simple endpoint for practice later
 

@@ -9,7 +9,6 @@ Demonstrates:
 - Task logging and monitoring
 """
 
-# i can rename this file to celery_tasks.py or background_tasks.py, but tasks.py is a common convention in Celery projects, so i'll keep it as tasks.py for now.
 import logging
 from celery import shared_task
 from datetime import datetime, timedelta
@@ -69,8 +68,7 @@ def send_task_reminder(self, task_id: int, user_id: int):
 
         # Idempotency check: don't remind if task is already completed
         if task.completed:
-            logger.info(
-                f"Task {task_id} already completed; no reminder needed")
+            logger.info(f"Task {task_id} already completed; no reminder needed")
             return {"status": "already_completed", "task_id": task_id}
 
         # Simulate sending a reminder email (in production, use actual email service)
@@ -104,8 +102,9 @@ def send_task_reminder(self, task_id: int, user_id: int):
     finally:
         db.close()
 
-# again shared_task is used here to allow Celery to discover this task without needing to import the module directly. This is a common pattern in Celery applications, especially when tasks are defined in separate modules or packages. It helps avoid circular imports and keeps the code modular.
-# how the celery works, why concerned about importing directly? answer: Celery uses a worker process to execute tasks asynchronously. When you define a task using `@shared_task`, it registers the task with the Celery app without requiring the module to be imported directly. This is important because if you have multiple modules that import each other (circular imports), it can lead to import errors or unexpected behavior. By using `@shared_task`, you ensure that the task is discoverable by Celery workers without needing to worry about the order of imports, making the codebase more modular and maintainable.
+
+# Note: again shared_task is used here to allow Celery to discover this task without needing to import the module directly. This is a common pattern in Celery applications, especially when tasks are defined in separate modules or packages. It helps avoid circular imports and keeps the code modular.
+# Note: how the celery works, why concerned about importing directly? answer: Celery uses a worker process to execute tasks asynchronously. When you define a task using `@shared_task`, it registers the task with the Celery app without requiring the module to be imported directly. This is important because if you have multiple modules that import each other (circular imports), it can lead to import errors or unexpected behavior. By using `@shared_task`, you ensure that the task is discoverable by Celery workers without needing to worry about the order of imports, making the codebase more modular and maintainable.
 
 
 @shared_task(
